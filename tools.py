@@ -148,7 +148,7 @@ async def analyze_kpi_across_municipalities(
     municipality_type: str = "K",
     municipality_ids: str | None = None,
 ) -> dict[str, Any]:
-    from .tools import get_kpi_metadata as _get_meta  # self import ok
+    from tools import get_kpi_metadata as _get_meta  # self import ok
 
     kpi_metadata_result: dict[str, Any] | dict[str, str] = await _get_meta(kpi_id, ctx)
     kpi_metadata: dict[str, Any] = {
@@ -158,7 +158,7 @@ async def analyze_kpi_across_municipalities(
         "operating_area": kpi_metadata_result.get("operating_area", ""),
     }
 
-    from .tools import fetch_kolada_data as _fetch
+    from tools import fetch_kolada_data as _fetch
 
     # Build URL like original util
     def _parse_years(year_str: str) -> list[str]:
@@ -368,7 +368,7 @@ async def compare_kpis(
     year_list = _parse_years(year)
     is_multi_year = len(year_list) > 1
 
-    from .tools import fetch_kolada_data as _fetch
+    from tools import fetch_kolada_data as _fetch
 
     data1 = await _fetch(kpi1_id, municipality_ids or "", ctx, year, municipality_type)
     data2 = await _fetch(kpi2_id, municipality_ids or "", ctx, year, municipality_type)
