@@ -1,0 +1,8 @@
+# MCP Framework
+mcp>=1.0.0
+
+# HTTP client for API requests
+httpx>=0.25.0
+
+# Type checking support
+typing-extensions>=4.8.0
