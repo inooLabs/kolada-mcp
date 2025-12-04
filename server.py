@@ -1,5 +1,6 @@
 import sys
 from mcp.server.fastmcp import FastMCP
+from starlette.responses import JSONResponse
 
 from lifespan import app_lifespan
 from entry_prompt import kolada_entry_point
@@ -29,10 +30,13 @@ mcp.tool()(filter_municipalities_by_kpi)  # type: ignore[Context]
 
 mcp.prompt()(kolada_entry_point)
 
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request):
+    return JSONResponse({"status": "ok"})
+
 def main():
     print("[Kolada MCP Lite] Starting server on streamable-http...", file=sys.stderr)
     mcp.run("streamable-http")
 
 if __name__ == "__main__":
     main()
-
