@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kolada-mcp-deployment
+  labels:
+    app: kolada-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kolada-mcp
+  template:
+    metadata:
+      labels:
+        app: kolada-mcp
+    spec:
+      imagePullSecrets:
+        - name: ghcr-cred
+      containers:
+        - name: kolada-mcp
+          image: ghcr.io/inoolabs/kolada-mcp:latest
+          ports:
+            - containerPort: 8001
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "500Mi"
+            limits:
+              cpu: "500m"
+              memory: "750Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
