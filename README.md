@@ -28,7 +28,7 @@ docker build -t kolada-mcp .
 docker run -p 8001:8001 kolada-mcp
 ```
 
-Or with docker-compose:
+Or with docker-compose: 
 
 ```bash
 docker-compose up
