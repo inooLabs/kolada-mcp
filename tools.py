@@ -124,17 +124,28 @@ async def fetch_kolada_data(
 
     import httpx
 
-    async with httpx.AsyncClient() as client:
-        resp = await client.get(url, timeout=180.0)
-        resp.raise_for_status()
-        data: dict[str, Any] = resp.json()
-        values_list: list[dict[str, Any]] = data.get("values", [])
-        for item in values_list:
-            m_id: str = item.get("municipality", "Unknown")
-            item["municipality_name"] = municipality_map.get(m_id, {}).get(
-                "title", f"Kommun {m_id}"
-            )
-        return data
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(url, timeout=180.0)
+            resp.raise_for_status()
+            data: dict[str, Any] = resp.json()
+            values_list: list[dict[str, Any]] = data.get("values", [])
+            for item in values_list:
+                m_id: str = item.get("municipality", "Unknown")
+                item["municipality_name"] = municipality_map.get(m_id, {}).get(
+                    "title", f"Kommun {m_id}"
+                )
+            return data
+    except httpx.HTTPStatusError as e:
+        return {
+            "error": f"HTTP error {e.response.status_code} fetching KPI data: {str(e.response.text)[:200]}"
+        }
+    except httpx.TimeoutException:
+        return {"error": "Request timed out while fetching data from Kolada API."}
+    except httpx.RequestError as e:
+        return {"error": f"Network error fetching KPI data: {str(e)}"}
+    except Exception as e:
+        return {"error": f"Unexpected error fetching KPI data: {str(e)}"}
 
 
 async def analyze_kpi_across_municipalities(
